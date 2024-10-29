@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VideoUploader\VideoManager.csproj" />
+    <ProjectReference Include="..\VideoManager\VideoManager.csproj" />
   </ItemGroup>
 
   <ItemGroup>
