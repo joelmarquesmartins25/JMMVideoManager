@@ -1,4 +1,4 @@
-﻿namespace VideoUploader.Domains.FileHandler;
+﻿namespace VideoManager.Domains.FileHandlers;
 
 public interface IFileHandler
 {

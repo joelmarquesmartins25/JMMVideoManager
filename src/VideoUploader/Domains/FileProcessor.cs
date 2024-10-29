@@ -1,14 +1,14 @@
-﻿using VideoUploader.Domains.FileHandler;
-using VideoUploader.Domains.MetadataGenerator;
-using VideoUploader.Domains.VideoUploader;
-using VideoUploader.Helpers;
+﻿using VideoManager.Domains.FileHandlers;
+using VideoManager.Domains.MetadataGenerators;
+using VideoManager.Domains.VideoPublishers;
+using VideoManager.Helpers;
 
-namespace VideoUploader.Domains;
+namespace VideoManager.Domains;
 
 public class FileProcessor(
     IFileHandler fileHandler,
     IMetadataGenerator metadataGenerator,
-    IVideoUploader videoUploader,
+    IVideoPublisher videoPublisher,
     ILogger<FileProcessor> logger)
 {
     public async Task ProcessVideos()
@@ -36,7 +36,7 @@ public class FileProcessor(
             }
 
             // Upload video
-            bool isSuccess = await videoUploader.UploadVideoAsync(videoFile);
+            bool isSuccess = await videoPublisher.UploadVideoAsync(videoFile);
             if (!isSuccess)
             {
                 logger.LogWarning(LogMessages.FailedToUploadVideo);

@@ -1,13 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
-using VideoUploader.Domains;
-using VideoUploader.Domains.FileHandler;
-using VideoUploader.Domains.MetadataGenerator;
-using VideoUploader.Domains.VideoUploader;
-using VideoUploader.Helpers;
-using VideoUploader.Tests.Helpers;
+using VideoManager.Domains;
+using VideoManager.Domains.FileHandlers;
+using VideoManager.Domains.MetadataGenerators;
+using VideoManager.Domains.VideoPublishers;
+using VideoManager.Helpers;
+using VideoManager.Tests.Helpers;
 
-namespace VideoUploader.Tests.Domains;
+namespace VideoManager.Tests.Domains;
 
 public class FileProcessorTests
 {
@@ -17,7 +17,7 @@ public class FileProcessorTests
 
     private readonly Mock<IFileHandler> _fileHandlerMock;
     private readonly Mock<IMetadataGenerator> _metadataGeneratorMock;
-    private readonly Mock<IVideoUploader> _videoUploaderMock;
+    private readonly Mock<IVideoPublisher> _videoPublisherMock;
     private readonly Mock<ILogger<FileProcessor>> _loggerMock;
     private readonly FileProcessor _fileProcessor;
 
@@ -28,10 +28,10 @@ public class FileProcessorTests
 
         _fileHandlerMock = new Mock<IFileHandler>();
         _metadataGeneratorMock = new Mock<IMetadataGenerator>();
-        _videoUploaderMock = new Mock<IVideoUploader>();
+        _videoPublisherMock = new Mock<IVideoPublisher>();
         _loggerMock = new Mock<ILogger<FileProcessor>>();
 
-        _fileProcessor = new FileProcessor(_fileHandlerMock.Object, _metadataGeneratorMock.Object, _videoUploaderMock.Object, _loggerMock.Object);
+        _fileProcessor = new FileProcessor(_fileHandlerMock.Object, _metadataGeneratorMock.Object, _videoPublisherMock.Object, _loggerMock.Object);
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public class FileProcessorTests
 
         _metadataGeneratorMock.Verify(mg => mg.GenerateMetadataAsync(_fileName), Times.Never);
 
-        _videoUploaderMock.Verify(vu => vu.UploadVideoAsync(_videoFile), Times.Never);
+        _videoPublisherMock.Verify(vu => vu.UploadVideoAsync(_videoFile), Times.Never);
 
         _loggerMock.VerifyLog(Times.Once);
         _loggerMock.VerifyLog(LogLevel.Information, Times.Once);
@@ -88,7 +88,7 @@ public class FileProcessorTests
 
         _metadataGeneratorMock.Verify(mg => mg.GenerateMetadataAsync(_fileName), Times.Once);
 
-        _videoUploaderMock.Verify(vu => vu.UploadVideoAsync(It.IsAny<VideoFile>()), Times.Never);
+        _videoPublisherMock.Verify(vu => vu.UploadVideoAsync(It.IsAny<VideoFile>()), Times.Never);
 
         _loggerMock.VerifyLog(Times.Exactly(2));
         _loggerMock.VerifyLog(LogLevel.Warning, Times.Once);
@@ -101,7 +101,7 @@ public class FileProcessorTests
         // Arrange
         _fileHandlerMock.Setup(fh => fh.GetFiles()).Returns(_files);
         _metadataGeneratorMock.Setup(mg => mg.GenerateMetadataAsync(_fileName)).ReturnsAsync(_videoFile);
-        _videoUploaderMock.Setup(vu => vu.UploadVideoAsync(_videoFile)).ReturnsAsync(false);
+        _videoPublisherMock.Setup(vu => vu.UploadVideoAsync(_videoFile)).ReturnsAsync(false);
 
         // Act
         await _fileProcessor.ProcessVideos();
@@ -113,7 +113,7 @@ public class FileProcessorTests
 
         _metadataGeneratorMock.Verify(mg => mg.GenerateMetadataAsync(_fileName), Times.Once);
 
-        _videoUploaderMock.Verify(vu => vu.UploadVideoAsync(_videoFile), Times.Once);
+        _videoPublisherMock.Verify(vu => vu.UploadVideoAsync(_videoFile), Times.Once);
 
         _loggerMock.VerifyLog(Times.Exactly(2));
         _loggerMock.VerifyLog(LogLevel.Warning, Times.Once);
@@ -126,7 +126,7 @@ public class FileProcessorTests
         // Arrange
         _fileHandlerMock.Setup(fh => fh.GetFiles()).Returns(_files);
         _metadataGeneratorMock.Setup(mg => mg.GenerateMetadataAsync(_fileName)).ReturnsAsync(_videoFile);
-        _videoUploaderMock.Setup(vu => vu.UploadVideoAsync(_videoFile)).ReturnsAsync(true);
+        _videoPublisherMock.Setup(vu => vu.UploadVideoAsync(_videoFile)).ReturnsAsync(true);
 
         // Act
         await _fileProcessor.ProcessVideos();
@@ -138,7 +138,7 @@ public class FileProcessorTests
 
         _metadataGeneratorMock.Verify(mg => mg.GenerateMetadataAsync(_fileName), Times.Once);
 
-        _videoUploaderMock.Verify(vu => vu.UploadVideoAsync(_videoFile), Times.Once);
+        _videoPublisherMock.Verify(vu => vu.UploadVideoAsync(_videoFile), Times.Once);
 
         _loggerMock.VerifyLog(Times.Exactly(2));
         _loggerMock.VerifyLog(LogLevel.Information, Times.Exactly(2));

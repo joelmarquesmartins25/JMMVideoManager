@@ -1,4 +1,4 @@
-namespace VideoUploader;
+namespace VideoManager;
 
 public class Worker : BackgroundService
 {

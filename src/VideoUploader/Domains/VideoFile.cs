@@ -1,4 +1,4 @@
-﻿namespace VideoUploader.Domains;
+﻿namespace VideoManager.Domains;
 
 public record VideoFile(string FileName, string? Title = null, string? Description = null)
 {

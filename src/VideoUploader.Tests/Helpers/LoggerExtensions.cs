@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace VideoUploader.Tests.Helpers;
+namespace VideoManager.Tests.Helpers;
 
 public static class LoggerExtensions
 {

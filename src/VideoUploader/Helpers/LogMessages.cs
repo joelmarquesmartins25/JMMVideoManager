@@ -1,4 +1,4 @@
-﻿namespace VideoUploader.Helpers;
+﻿namespace VideoManager.Helpers;
 
 public static class LogMessages
 {

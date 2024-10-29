@@ -1,4 +1,4 @@
-﻿namespace VideoUploader.Domains.MetadataGenerator;
+﻿namespace VideoManager.Domains.MetadataGenerators;
 
 public interface IMetadataGenerator
 {
