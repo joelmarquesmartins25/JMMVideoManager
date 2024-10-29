@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Local and Development appsettings
+/src/VideoUploader/appsettings.Development.json
+/src/VideoUploader/appsettings.Local.json
