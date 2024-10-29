@@ -3,13 +3,13 @@ using VideoManager.Domains.MetadataGenerators;
 using VideoManager.Domains.VideoPublishers;
 using VideoManager.Helpers;
 
-namespace VideoManager.Domains;
+namespace VideoManager.Domains.FileProcessors;
 
 public class FileProcessor(
     IFileHandler fileHandler,
     IMetadataGenerator metadataGenerator,
     IVideoPublisher videoPublisher,
-    ILogger<FileProcessor> logger)
+    ILogger<FileProcessor> logger) : IFileProcessor
 {
     public async Task ProcessVideos()
     {

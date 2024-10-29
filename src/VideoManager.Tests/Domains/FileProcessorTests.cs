@@ -2,6 +2,7 @@
 using Moq;
 using VideoManager.Domains;
 using VideoManager.Domains.FileHandlers;
+using VideoManager.Domains.FileProcessors;
 using VideoManager.Domains.MetadataGenerators;
 using VideoManager.Domains.VideoPublishers;
 using VideoManager.Helpers;
