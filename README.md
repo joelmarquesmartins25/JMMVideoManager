@@ -1,4 +1,4 @@
-# JMM Video Publisher
+# JMM Video Manager
 
 This project aims to have a recurring background job that monitores a folder every X minutes using Hangfire and when it finds video files, publishes them to the configured platform (YouTube, TikTok, etc) creating a title and a description using the OpenAI Api based on the file name.
 
