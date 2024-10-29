@@ -26,6 +26,10 @@ public class FileHandler(
         string fileName = Path.GetFileName(filePath);
 
         string destinationFolder = isSuccess ? publishedVideosFolder : errorVideosFolder;
+        if (!Directory.Exists(destinationFolder))
+        {
+            Directory.CreateDirectory(destinationFolder);
+        }
 
         string destinationFilePath = Path.Combine(destinationFolder, fileName);
 

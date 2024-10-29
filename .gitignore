@@ -363,8 +363,8 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Local and Development appsettings
-/src/VideoUploader/appsettings.Development.json
-/src/VideoUploader/appsettings.Local.json
+/src/VideoManager/appsettings.Development.json
+/src/VideoManager/appsettings.Local.json
 
 # Other Visual Studio files
 *.csproj.user
