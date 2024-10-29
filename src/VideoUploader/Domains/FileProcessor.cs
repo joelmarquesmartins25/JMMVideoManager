@@ -1,18 +1,51 @@
-﻿namespace VideoUploader.Domains;
+﻿using VideoUploader.Domains.FileHandler;
+using VideoUploader.Domains.MetadataGenerator;
+using VideoUploader.Domains.VideoUploader;
+using VideoUploader.Helpers;
 
-public class FileProcessor
+namespace VideoUploader.Domains;
+
+public class FileProcessor(
+    IFileHandler fileHandler,
+    IMetadataGenerator metadataGenerator,
+    IVideoUploader videoUploader,
+    ILogger<FileProcessor> logger)
 {
-    private readonly IFileHandler _fileHandler;
-
-    public FileProcessor(IFileHandler fileHandler)
-    {
-        _fileHandler = fileHandler;
-    }
-
     public async Task ProcessVideos()
     {
-        var files = _fileHandler.GetFiles();
+        var files = fileHandler.GetFiles();
+        if (!files.Any())
+        {
+            logger.LogInformation(LogMessages.NoFilesFound);
+            return;
+        }
 
-        await Task.CompletedTask;
+        foreach (string filePath in files)
+        {
+            // Get the file name
+            string fileName = Path.GetFileName(filePath);
+            logger.LogInformation("Started processing of the file: \"{fileName}\"...", fileName);
+
+            // Generate metadata
+            VideoFile? videoFile = await metadataGenerator.GenerateMetadataAsync(fileName);
+            if (videoFile == null)
+            {
+                logger.LogWarning(LogMessages.FailedToGenerateMetadata);
+                fileHandler.HandleFailure(filePath);
+                continue;
+            }
+
+            // Upload video
+            bool isSuccess = await videoUploader.UploadVideoAsync(videoFile);
+            if (!isSuccess)
+            {
+                logger.LogWarning(LogMessages.FailedToUploadVideo);
+                fileHandler.HandleFailure(filePath);
+                continue;
+            }
+
+            logger.LogInformation(LogMessages.SuccessfullyProcessedFile);
+            fileHandler.HandleSuccess(filePath);
+        }
     }
 }
