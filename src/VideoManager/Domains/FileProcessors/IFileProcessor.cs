@@ -2,5 +2,5 @@
 
 public interface IFileProcessor
 {
-    public Task ProcessVideos();
+    public Task ProcessVideos(CancellationToken cancellationToken);
 }

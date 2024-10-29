@@ -15,6 +15,7 @@ public class FileProcessorTests
     private const string _fileName = "video1.mp4";
     private readonly VideoFile _videoFile;
     private readonly List<string> _files = [];
+    private readonly CancellationToken _cancellationToken;
 
     private readonly Mock<IFileHandler> _fileHandlerMock;
     private readonly Mock<IMetadataGenerator> _metadataGeneratorMock;
@@ -26,6 +27,7 @@ public class FileProcessorTests
     {
         _files.Add(_fileName);
         _videoFile = new VideoFile(_fileName, "Title", "Brief Description");
+        _cancellationToken = new CancellationToken();
 
         _fileHandlerMock = new Mock<IFileHandler>();
         _metadataGeneratorMock = new Mock<IMetadataGenerator>();
@@ -42,7 +44,7 @@ public class FileProcessorTests
         _fileHandlerMock.Setup(fh => fh.GetFiles()).Returns(Array.Empty<string>);
 
         // Act
-        await _fileProcessor.ProcessVideos();
+        await _fileProcessor.ProcessVideos(_cancellationToken);
 
         // Assert
         _fileHandlerMock.Verify(fh => fh.GetFiles(), Times.Once);
@@ -65,7 +67,7 @@ public class FileProcessorTests
         _fileHandlerMock.Setup(fh => fh.GetFiles()).Returns(_files);
 
         // Act
-        await _fileProcessor.ProcessVideos();
+        await _fileProcessor.ProcessVideos(_cancellationToken);
 
         // Assert
         _fileHandlerMock.Verify(fh => fh.GetFiles(), Times.Once);
@@ -80,7 +82,7 @@ public class FileProcessorTests
         _metadataGeneratorMock.Setup(mg => mg.GenerateMetadataAsync(_fileName)).ReturnsAsync((VideoFile?)null);
 
         // Act
-        await _fileProcessor.ProcessVideos();
+        await _fileProcessor.ProcessVideos(_cancellationToken);
 
         // Assert
         _fileHandlerMock.Verify(fh => fh.GetFiles(), Times.Once);
@@ -105,7 +107,7 @@ public class FileProcessorTests
         _videoPublisherMock.Setup(vu => vu.UploadVideoAsync(_videoFile)).ReturnsAsync(false);
 
         // Act
-        await _fileProcessor.ProcessVideos();
+        await _fileProcessor.ProcessVideos(_cancellationToken);
 
         // Assert
         _fileHandlerMock.Verify(fh => fh.GetFiles(), Times.Once);
@@ -130,7 +132,7 @@ public class FileProcessorTests
         _videoPublisherMock.Setup(vu => vu.UploadVideoAsync(_videoFile)).ReturnsAsync(true);
 
         // Act
-        await _fileProcessor.ProcessVideos();
+        await _fileProcessor.ProcessVideos(_cancellationToken);
 
         // Assert
         _fileHandlerMock.Verify(fh => fh.GetFiles(), Times.Once);

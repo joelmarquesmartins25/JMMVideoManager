@@ -11,7 +11,7 @@ public class FileProcessor(
     IVideoPublisher videoPublisher,
     ILogger<FileProcessor> logger) : IFileProcessor
 {
-    public async Task ProcessVideos()
+    public async Task ProcessVideos(CancellationToken cancellationToken)
     {
         var files = fileHandler.GetFiles();
         if (!files.Any())
@@ -22,6 +22,12 @@ public class FileProcessor(
 
         foreach (string filePath in files)
         {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                await Task.FromCanceled(cancellationToken);
+                return;
+            }
+
             // Get the file name
             string fileName = Path.GetFileName(filePath);
             logger.LogInformation("Started processing of the file: \"{fileName}\"...", fileName);

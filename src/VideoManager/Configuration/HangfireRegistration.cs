@@ -17,7 +17,7 @@ internal class HangfireRegistration
             .UseActivator(new HangfireJobActivator(serviceProvider));
 
         // Schedule the Recurring Job
-        RecurringJob.AddOrUpdate<IFileProcessor>("video-manager", fp => fp.ProcessVideos(), $"*/{minuteInterval} * * * *");
+        RecurringJob.AddOrUpdate<IFileProcessor>("video-manager", fp => fp.ProcessVideos(CancellationToken.None), $"*/{minuteInterval} * * * *");
     }
 }
 
