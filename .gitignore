@@ -365,3 +365,7 @@ FodyWeavers.xsd
 # Local and Development appsettings
 /src/VideoUploader/appsettings.Development.json
 /src/VideoUploader/appsettings.Local.json
+
+# Other Visual Studio files
+*.csproj.user
+/**/launchSettings.json
