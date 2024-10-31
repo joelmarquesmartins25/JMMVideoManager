@@ -55,9 +55,9 @@ public class FileProcessorTests
 
         _videoPublisherMock.Verify(vu => vu.UploadVideoAsync(_videoFile), Times.Never);
 
-        _loggerMock.VerifyLog(Times.Once);
-        _loggerMock.VerifyLog(LogLevel.Information, Times.Once);
-        _loggerMock.VerifyLog(LogLevel.Information, LogMessages.NoFilesFound, Times.Once);
+        _loggerMock.VerifyLogCount(Times.Exactly(3));
+        _loggerMock.VerifyLogLevelCount(LogLevel.Information, Times.Exactly(3));
+        _loggerMock.VerifyLogLevelContainsMessage(LogLevel.Information, LogMessages.NoFilesFound, Times.Once);
     }
 
     [Fact]
@@ -93,9 +93,9 @@ public class FileProcessorTests
 
         _videoPublisherMock.Verify(vu => vu.UploadVideoAsync(It.IsAny<VideoFile>()), Times.Never);
 
-        _loggerMock.VerifyLog(Times.Exactly(2));
-        _loggerMock.VerifyLog(LogLevel.Warning, Times.Once);
-        _loggerMock.VerifyLog(LogLevel.Warning, LogMessages.FailedToGenerateMetadata, Times.Once);
+        _loggerMock.VerifyLogCount(Times.Exactly(4));
+        _loggerMock.VerifyLogLevelCount(LogLevel.Warning, Times.Once);
+        _loggerMock.VerifyLogLevelContainsMessage(LogLevel.Warning, LogMessages.FailedToGenerateMetadata, Times.Once);
     }
 
     [Fact]
@@ -118,9 +118,9 @@ public class FileProcessorTests
 
         _videoPublisherMock.Verify(vu => vu.UploadVideoAsync(_videoFile), Times.Once);
 
-        _loggerMock.VerifyLog(Times.Exactly(2));
-        _loggerMock.VerifyLog(LogLevel.Warning, Times.Once);
-        _loggerMock.VerifyLog(LogLevel.Warning, LogMessages.FailedToUploadVideo, Times.Once);
+        _loggerMock.VerifyLogCount(Times.Exactly(4));
+        _loggerMock.VerifyLogLevelCount(LogLevel.Warning, Times.Once);
+        _loggerMock.VerifyLogLevelContainsMessage(LogLevel.Warning, LogMessages.FailedToUploadVideo, Times.Once);
     }
 
     [Fact]
@@ -143,8 +143,9 @@ public class FileProcessorTests
 
         _videoPublisherMock.Verify(vu => vu.UploadVideoAsync(_videoFile), Times.Once);
 
-        _loggerMock.VerifyLog(Times.Exactly(2));
-        _loggerMock.VerifyLog(LogLevel.Information, Times.Exactly(2));
-        _loggerMock.VerifyLog(LogLevel.Information, LogMessages.SuccessfullyProcessedFile, Times.Once);
+        _loggerMock.VerifyLogCount(Times.Exactly(4));
+        _loggerMock.VerifyLogLevelCount(LogLevel.Information, Times.Exactly(4));
+        _loggerMock.VerifyLogLevelContainsMessage(LogLevel.Information, LogMessages.SuccessfullyProcessedFile, Times.Once);
+        _loggerMock.VerifyLogLevelContainsMessage(LogLevel.Information, LogMessages.FileProcessorFinished, Times.Once);
     }
 }

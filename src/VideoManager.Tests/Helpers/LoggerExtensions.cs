@@ -5,7 +5,7 @@ namespace VideoManager.Tests.Helpers;
 
 public static class LoggerExtensions
 {
-    public static void VerifyLog<T>(
+    public static void VerifyLogCount<T>(
         this Mock<ILogger<T>> loggerMock,
         Times times)
     {
@@ -14,12 +14,12 @@ public static class LoggerExtensions
                 It.IsAny<LogLevel>(),
                 It.IsAny<EventId>(),
                 It.IsAny<It.IsAnyType>(),
-                null,
+                It.IsAny<Exception?>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             times);
     }
 
-    public static void VerifyLog<T>(
+    public static void VerifyLogCount<T>(
         this Mock<ILogger<T>> loggerMock,
         Func<Times> times)
     {
@@ -28,12 +28,12 @@ public static class LoggerExtensions
                 It.IsAny<LogLevel>(),
                 It.IsAny<EventId>(),
                 It.IsAny<It.IsAnyType>(),
-                null,
+                It.IsAny<Exception?>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             times);
     }
 
-    public static void VerifyLog<T>(
+    public static void VerifyLogLevelCount<T>(
         this Mock<ILogger<T>> loggerMock,
         LogLevel logLevel,
         Times times)
@@ -43,12 +43,12 @@ public static class LoggerExtensions
                 logLevel,
                 It.IsAny<EventId>(),
                 It.IsAny<It.IsAnyType>(),
-                null,
+                It.IsAny<Exception?>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             times);
     }
 
-    public static void VerifyLog<T>(
+    public static void VerifyLogLevelCount<T>(
         this Mock<ILogger<T>> loggerMock,
         LogLevel logLevel,
         Func<Times> times)
@@ -58,12 +58,12 @@ public static class LoggerExtensions
                 logLevel,
                 It.IsAny<EventId>(),
                 It.IsAny<It.IsAnyType>(),
-                null,
+                It.IsAny<Exception?>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             times);
     }
 
-    public static void VerifyLog<T>(
+    public static void VerifyLogLevelContainsMessage<T>(
         this Mock<ILogger<T>> loggerMock,
         LogLevel logLevel,
         string expectedMessage,
@@ -73,8 +73,8 @@ public static class LoggerExtensions
             logger => logger.Log(
                 logLevel,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString() == expectedMessage),
-                null,
+                It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains(expectedMessage)),
+                It.IsAny<Exception?>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             times);
     }

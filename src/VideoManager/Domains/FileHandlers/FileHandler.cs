@@ -1,4 +1,6 @@
 ﻿
+using VideoManager.Helpers;
+
 namespace VideoManager.Domains.FileHandlers;
 
 public class FileHandler(
@@ -35,6 +37,8 @@ public class FileHandler(
 
         File.Move(filePath, destinationFilePath);
 
-        logger.LogInformation("File: {fileName} moved from {currentFolder} to {destinationFolder}.", fileName, currentFolder, destinationFolder);
+        logger.LogInformation(
+            "{CurrentDateTime} - File: {fileName} moved from {currentFolder} to {destinationFolder}.",
+            LogMessages.GetCurrentDateTime(), fileName, currentFolder, destinationFolder);
     }
 }

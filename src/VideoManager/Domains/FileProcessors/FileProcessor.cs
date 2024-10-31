@@ -1,4 +1,5 @@
-﻿using VideoManager.Domains.FileHandlers;
+﻿using System.Diagnostics.CodeAnalysis;
+using VideoManager.Domains.FileHandlers;
 using VideoManager.Domains.MetadataGenerators;
 using VideoManager.Domains.VideoPublishers;
 using VideoManager.Helpers;
@@ -13,10 +14,13 @@ public class FileProcessor(
 {
     public async Task ProcessVideos(CancellationToken cancellationToken)
     {
+        this.LogMessage(LogLevel.Information, LogMessages.FileProcessorStarted);
+
         var files = fileHandler.GetFiles();
         if (!files.Any())
         {
-            logger.LogInformation(LogMessages.NoFilesFound);
+            this.LogMessage(LogLevel.Information, LogMessages.NoFilesFound);
+            this.LogMessage(LogLevel.Information, LogMessages.FileProcessorFinished);
             return;
         }
 
@@ -30,13 +34,13 @@ public class FileProcessor(
 
             // Get the file name
             string fileName = Path.GetFileName(filePath);
-            logger.LogInformation("Started processing of the file: \"{fileName}\"...", fileName);
+            this.LogMessage(LogLevel.Information, LogMessages.StartedProcessingFile, fileName);
 
             // Generate metadata
             VideoFile? videoFile = await metadataGenerator.GenerateMetadataAsync(fileName);
             if (videoFile == null)
             {
-                logger.LogWarning(LogMessages.FailedToGenerateMetadata);
+                this.LogMessage(LogLevel.Warning, LogMessages.FailedToGenerateMetadata);
                 fileHandler.HandleFailure(filePath);
                 continue;
             }
@@ -45,13 +49,26 @@ public class FileProcessor(
             bool isSuccess = await videoPublisher.UploadVideoAsync(videoFile);
             if (!isSuccess)
             {
-                logger.LogWarning(LogMessages.FailedToUploadVideo);
+                this.LogMessage(LogLevel.Warning, LogMessages.FailedToUploadVideo);
                 fileHandler.HandleFailure(filePath);
                 continue;
             }
 
-            logger.LogInformation(LogMessages.SuccessfullyProcessedFile);
+            this.LogMessage(LogLevel.Information, LogMessages.SuccessfullyProcessedFile, fileName);
             fileHandler.HandleSuccess(filePath);
         }
+
+        // Finished processing
+        this.LogMessage(LogLevel.Information, LogMessages.FileProcessorFinished);
+    }
+
+    [SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "Improves readability")]
+    private void LogMessage(LogLevel level, string message, string? fileName = null)
+    {
+        string formattedMessage = fileName is null
+            ? $"{LogMessages.GetCurrentDateTime()} - {message}"
+            : $"{LogMessages.GetCurrentDateTime()} - {message}: {fileName}";
+
+        logger.Log(level, formattedMessage);
     }
 }
